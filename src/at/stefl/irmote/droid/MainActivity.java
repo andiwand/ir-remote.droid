@@ -11,14 +11,17 @@ import at.stefl.irremote.droid.R;
 
 public class MainActivity extends ActionBarActivity {
 
+	private WebView webView;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		WebView webView = (WebView) findViewById(R.id.webview);
+		webView = (WebView) findViewById(R.id.webview);
 		WebSettings webSettings = webView.getSettings();
 		webSettings.setJavaScriptEnabled(true);
+
 		webView.addJavascriptInterface(JsInterface.INSTANCE, "Android");
 		webView.loadUrl("file:///android_asset/index.html");
 	}

@@ -17,29 +17,6 @@ public class JsRemote {
 
 	public static final JsRemote INSTANCE = new JsRemote();
 
-	private static class StationBox {
-		private final Station station;
-
-		public StationBox(Station station) {
-			this.station = station;
-		}
-
-		@JavascriptInterface
-		public String getName() {
-			return station.getName();
-		}
-
-		@JavascriptInterface
-		public String getAddress() {
-			return station.getAddress().getHostAddress();
-		}
-
-		@JavascriptInterface
-		public int getPort() {
-			return station.getPort();
-		}
-	}
-	
 	private final Remote remote = new Remote();
 
 	private JsRemote() {
@@ -55,26 +32,36 @@ public class JsRemote {
 		} catch (IOException e) {
 			e.printStackTrace();
 			// TODO: report
+			return null;
 		}
-
-		return null;
 	}
-	
+
 	@JavascriptInterface
 	public void send(String station, String raw) {
 		try {
-			System.out.println(station);
-			System.out.println(raw);
 			Gson gson = GsonHelper.getGson();
 			Station s = gson.fromJson(station, Station.class);
 			RawFrame r = gson.fromJson(raw, RawFrame.class);
-			System.out.println(s);
-			System.out.println(r);
 			remote.setStation(s);
 			remote.sendRaw(r);
 		} catch (IOException e) {
 			e.printStackTrace();
 			// TODO: report
+		}
+	}
+
+	@JavascriptInterface
+	public String receive(String station) {
+		try {
+			Gson gson = GsonHelper.getGson();
+			Station s = gson.fromJson(station, Station.class);
+			remote.setStation(s);
+			RawFrame raw = remote.receiveRaw();
+			return gson.toJson(raw);
+		} catch (IOException e) {
+			e.printStackTrace();
+			// TODO: report
+			return null;
 		}
 	}
 

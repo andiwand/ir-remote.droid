@@ -3,7 +3,7 @@ var remote = Android.getRemote();
 
 IR.__impl = IR.__impl || {};
 
-IR.__impl.station_discovery = function(port, timeout, maxPacketSize) {
+IR.__impl.station_discover = function(port, timeout, maxPacketSize) {
   var stations = remote.discover(port, timeout, maxPacketSize);
   stations = JSON.parse(stations);
   var result = [];
@@ -20,7 +20,8 @@ IR.__impl.station_send = function(station, raw) {
   remote.send(s, r);
 };
 
-var stations = IR.__impl.station_discovery(8888, 2000, 50);
-var nec = new IR.NecFrame(1234);
-var raw = nec.encode(IR.default.error_settings);
-IR.__impl.station_send(stations[0], raw);
+IR.__impl.station_receive = function(station) {
+  var s = JSON.stringify(station.serialize());
+  var raw = remote.receive(s);
+  return IR.RawFrame.deserialize(raw);
+};
