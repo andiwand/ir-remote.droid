@@ -1,80 +1,27 @@
-var gridster;
-var edit;
-var drag;
+var console = Android.getConsole();
+var remote = Android.getRemote();
 
-$(function() {
-  gridster = $(".gridster > ul").gridster({
-    widget_margins: [5, 5],
-    widget_base_dimensions: [50, 50],
-    resize: {
-      enabled: true
-    },
-    draggable: {
-      start: function(e) {
-        drag = true;
-      }
-    }
-  }).data("gridster");
-  edit = true;
-  addButton();
-  addButton();
-  switchEdit();
+IR.__impl = IR.__impl || {};
 
-  $(document).click(function(event) {
-    $("body").zoomTo({duration: 600});
-    event.stopPropagation();
-  });
-});
-
-// TODO: do it with onmousedown
-function checkDrag() {
-  var result = drag;
-  drag = false;
+IR.__impl.station_discover = function(port, timeout, maxPacketSize) {
+  var stations = remote.discover(port, timeout, maxPacketSize);
+  stations = JSON.parse(stations);
+  var result = [];
+  for (var i = 0; i < stations.length; i++) {
+    var station = IR.Station.deserialize(stations[i]);
+    result.push(station);
+  }
   return result;
-}
+};
 
-function switchEdit() {
-  if (edit) {
-    gridster.disable();
-    gridster.disable_resize();
-  } else {
-    gridster.enable();
-    gridster.enable_resize();
-  }
-  edit = !edit;
-}
+IR.__impl.station_send = function(station, raw) {
+  var s = JSON.stringify(station.serialize());
+  var r = JSON.stringify(raw.serialize());
+  remote.send(s, r);
+};
 
-function cloneTemplate(selector, id) {
-  var clone = selector.clone();
-  if (id === "") {
-  } else if (id) {
-    clone.attr("id", id);
-  } else {
-    clone.removeAttr("id");
-  }
-  return clone;
-}
-
-function addButton() {
-  if (!edit) return;
-  if (checkDrag()) return;
-  var button = cloneTemplate($("#button-template"));
-  gridster.add_widget(button);
-  button.click(button, clickButton);
-}
-
-function clickButton(event) {
-  if (edit) {
-    if (checkDrag()) return;
-
-    var button = event.data;
-    button.zoomTo({targetsize: 0.75, duration: 600});
-    event.stopPropagation();
-  } else {
-    console.log("send");
-  }
-}
-
-function dicover() {
-
-}
+IR.__impl.station_receive = function(station) {
+  var s = JSON.stringify(station.serialize());
+  var raw = remote.receive(s);
+  return IR.RawFrame.deserialize(raw);
+};

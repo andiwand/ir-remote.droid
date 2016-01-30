@@ -1,30 +1,21 @@
 <!doctype html>
 <html>
 <head>
-  <title>test</title>
-  <link rel="stylesheet" type="text/css" href="libs/jquery.gridster.min.css">
+  <title>IR-Remote</title>
+
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+
+  <script src="../libs/webcomponentsjs/webcomponents.js"></script>
+
+  <link rel="import" href="../libs/polymer/polymer.html">
+  <link rel="import" href="../elements/app-main.html">
+
   <link rel="stylesheet" type="text/css" href="style.css">
 
-  <script type="text/javascript" src="libs/jquery-2.1.4.min.js"></script>
-  <script type="text/javascript" src="libs/jquery.gridster.min.js"></script>
-  <script type="text/javascript" src="libs/jquery.zoomooz.min.js"></script>
-  <script type="text/javascript" src="libs/ir-client.min.js"></script>
-  <script type="text/javascript" src="script.js"></script>
-  <script type="text/javascript" src="android.js"></script>
+  <script src="script.js"></script>
 </head>
-<body>
-  <button class="control-button" name="discover" onclick="discover()">discover</button>
-  <hr/>
-  <button class="control-button" name="edit" onclick="switchEdit()">edit</button>
-  <button class="control-button" name="add" onclick="addButton()">add</button>
-  <hr/>
-  <div class="gridster">
-    <ul></ul>
-  </div>
 
-  <div class="template">
-    <li id="button-template" class="button"></li>
-    <li id="add-button-template" onclick="addButton()">+</li>
-  </div>
+<body unresolved>
+  <app-main></app-main>
 </body>
 </html>
